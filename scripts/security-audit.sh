@@ -38,7 +38,7 @@ else
 fi
 
 # Check for common secret patterns
-if git -C "$REPO_ROOT" grep -nEi '(api_key|secret_key|password|token)\s*=' -- '*.py' '*.sh' '*.md' 2>/dev/null | grep -v 'example\|template\|dummy\|placeholder\|specs/' | head -10; then
+if git -C "$REPO_ROOT" grep -nEi '(api_key|secret_key|password|token)\s*=' -- '*.py' '*.sh' '*.md' 2>/dev/null | grep -v 'example\|template\|dummy\|placeholder\|spec/' | head -10; then
     echo "WARNING: Found possible secrets in tracked files"
     ISSUES=$((ISSUES + 1))
 else

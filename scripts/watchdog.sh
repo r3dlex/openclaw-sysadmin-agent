@@ -9,7 +9,7 @@
 #   bash scripts/watchdog.sh              # Run directly
 #   launchctl load <generated.plist>      # Run as launchd daemon
 #
-# See: specs/TROUBLESHOOTING.md for common issues
+# See: spec/TROUBLESHOOTING.md for common issues
 # =============================================================================
 
 set -euo pipefail

@@ -43,7 +43,7 @@ scripts/               # Automation scripts
   ├── security-audit.sh # Sensitive data checker
   └── install-watchdog.sh # LaunchAgent installer
 watchdog/              # Docker-based gateway monitor
-specs/                 # Deep-dive documentation
+spec/                 # Deep-dive documentation
   ├── ARCHITECTURE.md  # How everything fits together
   ├── TROUBLESHOOTING.md # Common issues and fixes
   ├── TESTING.md       # Validation procedures
@@ -52,7 +52,7 @@ specs/                 # Deep-dive documentation
 
 ## For Developers
 
-See `CLAUDE.md` for development instructions and `specs/ARCHITECTURE.md` for the full architecture overview.
+See `CLAUDE.md` for development instructions and `spec/ARCHITECTURE.md` for the full architecture overview.
 
 ## Configuration
 

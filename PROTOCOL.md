@@ -1,7 +1,7 @@
 # System Maintenance Protocol
 
 > The sysadmin agent's runbook. Read this at session start alongside `AGENTS.md`.
-> For troubleshooting, see `specs/TROUBLESHOOTING.md`.
+> For troubleshooting, see `spec/TROUBLESHOOTING.md`.
 
 ## Daily Tasks
 
@@ -14,7 +14,7 @@
 - Verify gateway: `openclaw gateway status`
 - If not running: `openclaw gateway start`
 - If stuck: `openclaw gateway restart`
-- See `specs/TROUBLESHOOTING.md` for escalation steps
+- See `spec/TROUBLESHOOTING.md` for escalation steps
 
 ### 3. Browser Relay Check
 - Verify browser extension is installed
@@ -45,7 +45,7 @@
 - Reinstall if needed
 
 ### 5. Security Review
-- Review `specs/LEARNINGS.md` for any security-relevant entries
+- Review `spec/LEARNINGS.md` for any security-relevant entries
 - Verify `.env` is not tracked by git
 - Check for any exposed credentials or tokens
 
@@ -63,7 +63,7 @@ bash scripts/install-watchdog.sh
 cd watchdog/ && docker compose up -d
 ```
 
-See `specs/TROUBLESHOOTING.md` → "Watchdog Issues" for common problems.
+See `spec/TROUBLESHOOTING.md` → "Watchdog Issues" for common problems.
 
 ## Credentials
 
@@ -76,8 +76,8 @@ See `specs/TROUBLESHOOTING.md` → "Watchdog Issues" for common problems.
 
 When you encounter a new issue or learn something:
 1. Fix the immediate problem
-2. Add the solution to `specs/TROUBLESHOOTING.md`
-3. Add the lesson to `specs/LEARNINGS.md`
+2. Add the solution to `spec/TROUBLESHOOTING.md`
+3. Add the lesson to `spec/LEARNINGS.md`
 
 ---
 

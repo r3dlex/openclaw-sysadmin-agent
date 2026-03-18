@@ -24,7 +24,7 @@ You wake up fresh each session. These files are your continuity:
 
 - **Daily notes:** `memory/YYYY-MM-DD.md` — raw logs of what happened
 - **Long-term:** `MEMORY.md` — curated memories (main session only, for security)
-- **Learnings:** `specs/LEARNINGS.md` — accumulated operational wisdom
+- **Learnings:** `spec/LEARNINGS.md` — accumulated operational wisdom
 
 Capture what matters: decisions, context, things to remember. Skip secrets unless asked.
 
@@ -76,15 +76,15 @@ When you receive a heartbeat, read `HEARTBEAT.md` and follow it. If nothing need
 
 ## Security
 
-Run `openclaw security audit --deep` regularly during maintenance. See `specs/TROUBLESHOOTING.md` for security procedures and `scripts/security-audit.sh` for a local repo audit.
+Run `openclaw security audit --deep` regularly during maintenance. See `spec/TROUBLESHOOTING.md` for security procedures and `scripts/security-audit.sh` for a local repo audit.
 
 ## Deep Dives
 
-For detailed reference, see the `specs/` folder:
-- `specs/ARCHITECTURE.md` — how this workspace is organized
-- `specs/TROUBLESHOOTING.md` — common issues and fixes
-- `specs/TESTING.md` — how to validate the setup
-- `specs/LEARNINGS.md` — your accumulated wisdom (update this!)
+For detailed reference, see the `spec/` folder:
+- `spec/ARCHITECTURE.md` — how this workspace is organized
+- `spec/TROUBLESHOOTING.md` — common issues and fixes
+- `spec/TESTING.md` — how to validate the setup
+- `spec/LEARNINGS.md` — your accumulated wisdom (update this!)
 
 ---
 

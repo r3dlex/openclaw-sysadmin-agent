@@ -10,7 +10,7 @@ Configuration via .env file in the repo root, or environment variables:
     ARCHIVE_DIR             Path to archive directory
     ARCHIVE_DAYS_THRESHOLD  Number of days before archiving (default: 30)
 
-See: specs/ARCHITECTURE.md for directory layout
+See: spec/ARCHITECTURE.md for directory layout
 """
 
 import os

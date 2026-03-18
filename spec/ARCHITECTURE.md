@@ -22,7 +22,7 @@ This repository is an **OpenClaw agent workspace** — a self-contained environm
 │  ├── HEARTBEAT.md   → Periodic task queue        │
 │  ├── scripts/       → Automation scripts         │
 │  ├── watchdog/      → Gateway health monitor     │
-│  └── specs/         → Architecture docs          │
+│  └── spec/         → Architecture docs          │
 └──────────────────┬──────────────────────────────┘
                    │
 ┌──────────────────▼──────────────────────────────┐
@@ -58,7 +58,7 @@ openclaw-sysadmin-agent/
 │   ├── Dockerfile         # Containerized watchdog
 │   ├── docker-compose.yml # Docker Compose config
 │   └── watchdog.sh        # Container watchdog script
-├── specs/
+├── spec/
 │   ├── ARCHITECTURE.md    # This file
 │   ├── TROUBLESHOOTING.md # Common issues and fixes
 │   ├── TESTING.md         # How to test the setup
@@ -80,20 +80,20 @@ Files read at runtime by the sysadmin agent during its sessions:
 - `PROTOCOL.md` — maintenance tasks
 - `HEARTBEAT.md` — periodic task queue
 - `TOOLS.md` — environment-specific notes
-- `specs/LEARNINGS.md` — accumulated wisdom from past issues
+- `spec/LEARNINGS.md` — accumulated wisdom from past issues
 
 ### 2. Dev Agents / Contributors (development)
 Files read by Claude Code or human contributors improving the workspace:
 - `CLAUDE.md` — development instructions, progressive disclosure
-- `specs/ARCHITECTURE.md` — this file
-- `specs/TROUBLESHOOTING.md` — known issues
-- `specs/TESTING.md` — validation procedures
+- `spec/ARCHITECTURE.md` — this file
+- `spec/TROUBLESHOOTING.md` — known issues
+- `spec/TESTING.md` — validation procedures
 - `README.md` — public onboarding
 
 ## Key Design Decisions
 
 1. **Environment variables over hardcoded paths** — All local paths and secrets live in `.env`, never in committed code.
-2. **Progressive disclosure** — Both CLAUDE.md and AGENTS.md link to specs/ for deep dives, keeping top-level files scannable.
+2. **Progressive disclosure** — Both CLAUDE.md and AGENTS.md link to spec/ for deep dives, keeping top-level files scannable.
 3. **Zero-install scripts** — The watchdog can run natively via launchd OR containerized via Docker. Scripts source `.env` for configuration.
 4. **Gitignored runtime data** — `logs/`, `archive/`, `.openclaw/`, and `.env` never hit the repo.
 5. **Security audit built-in** — The agent periodically runs `openclaw security audit --deep` as part of its maintenance protocol.

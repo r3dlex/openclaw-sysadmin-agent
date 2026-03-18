@@ -11,8 +11,8 @@ An [OpenClaw](https://docs.openclaw.ai/) agent workspace where an AI agent acts 
 
 | Audience | Reads | Purpose |
 |----------|-------|---------|
-| **OpenClaw agent** (runtime) | `AGENTS.md`, `SOUL.md`, `USER.md`, `PROTOCOL.md`, `HEARTBEAT.md`, `TOOLS.md`, `IDENTITY.md`, `specs/LEARNINGS.md` | Behavior at runtime |
-| **Dev agents** (you) | `CLAUDE.md`, `specs/ARCHITECTURE.md`, `specs/TROUBLESHOOTING.md`, `specs/TESTING.md`, `README.md` | Improving the workspace |
+| **OpenClaw agent** (runtime) | `AGENTS.md`, `SOUL.md`, `USER.md`, `PROTOCOL.md`, `HEARTBEAT.md`, `TOOLS.md`, `IDENTITY.md`, `spec/LEARNINGS.md` | Behavior at runtime |
+| **Dev agents** (you) | `CLAUDE.md`, `spec/ARCHITECTURE.md`, `spec/TROUBLESHOOTING.md`, `spec/TESTING.md`, `README.md` | Improving the workspace |
 
 When editing agent-facing files, remember: the OpenClaw agent is **autonomous** — it reads these files to decide what to do. It should be fully capable of operating without human intervention, while remaining entitled to make its own decisions.
 
@@ -20,7 +20,7 @@ When editing agent-facing files, remember: the OpenClaw agent is **autonomous** 
 
 1. **No sensitive data in git.** Paths, phone numbers, tokens, credentials — all go in `.env` (gitignored). Use `${HOME}` or env vars in scripts.
 2. **Scripts source `.env`.** All scripts in `scripts/` load `../.env` for configuration. No hardcoded paths.
-3. **Progressive disclosure.** Keep top-level files scannable. Link to `specs/` for deep dives.
+3. **Progressive disclosure.** Keep top-level files scannable. Link to `spec/` for deep dives.
 4. **Zero-install.** Scripts run natively on macOS or via Docker (`watchdog/`). No pip install required (archive.py uses stdlib, optional dotenv).
 
 ## Directory Layout
@@ -34,11 +34,11 @@ HEARTBEAT.md           ← Periodic task queue
 TOOLS.md / IDENTITY.md ← Agent environment notes
 scripts/               ← Automation (watchdog, archive, tabs, security)
 watchdog/              ← Docker-based gateway monitor
-specs/                 ← Architecture, troubleshooting, testing, learnings
+spec/                 ← Architecture, troubleshooting, testing, learnings
 .env.example           ← Template for local config
 ```
 
-See `specs/ARCHITECTURE.md` for the full layout and design decisions.
+See `spec/ARCHITECTURE.md` for the full layout and design decisions.
 
 ## Common Tasks
 
@@ -53,7 +53,7 @@ See `specs/ARCHITECTURE.md` for the full layout and design decisions.
 Edit `AGENTS.md` (behavior contract) or `PROTOCOL.md` (task list). The agent reads these at session start.
 
 ### Adding a troubleshooting entry
-Add to `specs/TROUBLESHOOTING.md`. The agent consults this before escalating.
+Add to `spec/TROUBLESHOOTING.md`. The agent consults this before escalating.
 
 ### Running the security audit
 ```bash
@@ -76,7 +76,7 @@ cd watchdog/ && docker compose up -d      # Install via Docker
 
 ## Specs (Deep Dives)
 
-- `specs/ARCHITECTURE.md` — workspace design, directory layout, two-audience model
-- `specs/TROUBLESHOOTING.md` — known issues and step-by-step fixes
-- `specs/TESTING.md` — validation procedures and health checks
-- `specs/LEARNINGS.md` — operational wisdom (maintained by the sysadmin agent)
+- `spec/ARCHITECTURE.md` — workspace design, directory layout, two-audience model
+- `spec/TROUBLESHOOTING.md` — known issues and step-by-step fixes
+- `spec/TESTING.md` — validation procedures and health checks
+- `spec/LEARNINGS.md` — operational wisdom (maintained by the sysadmin agent)
