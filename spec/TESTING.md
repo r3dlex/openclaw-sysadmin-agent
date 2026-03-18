@@ -1,8 +1,17 @@
 # Testing
 
 > How to verify the sysadmin agent setup is working correctly.
+> Referenced from: `CLAUDE.md`, `AGENTS.md`, `README.md`, `spec/ARCHITECTURE.md`
 
 ## Quick Health Check
+
+Run all checks at once:
+
+```bash
+bash scripts/security-audit.sh
+```
+
+Or individually:
 
 ```bash
 # 1. Gateway running?
@@ -14,15 +23,22 @@ pgrep -f watchdog.sh || echo "Watchdog not running"
 # 3. Environment configured?
 test -f .env && echo ".env exists" || echo "Missing .env — copy from .env.example"
 
-# 4. Security audit
+# 4. Full security audit
 openclaw security audit --deep
 ```
 
 ## Script Tests
 
+### Security Audit
+```bash
+# Checks for sensitive data in git + runs openclaw audit
+bash scripts/security-audit.sh
+# Exit code 0 = clean, non-zero = issues found
+```
+
 ### Watchdog (host)
 ```bash
-# Dry run — check that it starts and logs correctly
+# Start in background, verify it logs, then stop
 bash scripts/watchdog.sh &
 sleep 5
 tail -5 ~/.openclaw/logs/watchdog.log
@@ -41,25 +57,36 @@ docker compose down
 
 ### Archive Maintenance
 ```bash
-# Dry run — will report what would be archived
+# Reports what would be archived (non-destructive to read)
 python3 scripts/archive.py
 ```
 
 ### Tab Cleanup
 ```bash
-# Only works on macOS with Keyboard Maestro installed
+# macOS only, requires Keyboard Maestro
 bash scripts/close-tabs.sh
+```
+
+### Watchdog Installer
+```bash
+# Install (generates plist from template, loads into launchd)
+bash scripts/install-watchdog.sh
+
+# Verify
+launchctl list | grep openclaw
+
+# Uninstall
+bash scripts/install-watchdog.sh uninstall
 ```
 
 ## Validating .env
 
 ```bash
-# Source and verify key variables are set
 source .env
-echo "OPENCLAW_BIN: ${OPENCLAW_BIN:-NOT SET}"
-echo "OPENCLAW_PORT: ${OPENCLAW_PORT:-NOT SET}"
-echo "BACKUP_DRIVE_PATH: ${BACKUP_DRIVE_PATH:-NOT SET}"
-echo "TZ: ${TZ:-NOT SET}"
+for var in OPENCLAW_BIN OPENCLAW_PORT BACKUP_DRIVE_PATH TZ WHATSAPP_ALERT_NUMBER; do
+  val=$(eval echo "\${$var:-NOT SET}")
+  echo "$var: $val"
+done
 ```
 
 ## Validating Agent Files
@@ -78,10 +105,21 @@ done
 
 ## Pre-Commit Checklist
 
-Before committing changes:
+Before committing, run the automated audit:
 
-1. No hardcoded local paths (grep for `/Users/`)
-2. No phone numbers or secrets (grep for `+49`, `+1`, passwords)
+```bash
+bash scripts/security-audit.sh
+```
+
+This checks:
+1. No hardcoded local paths in tracked files
+2. No phone numbers or secrets in tracked files
 3. `.env` is gitignored
-4. `logs/` and `archive/` are gitignored
-5. Run `openclaw security audit --deep`
+4. `logs/`, `archive/`, `.openclaw/` are gitignored
+5. `openclaw security audit --deep` passes
+
+If the audit exits with 0, you're clear to commit.
+
+## Troubleshooting Test Failures
+
+If any test fails, see `spec/TROUBLESHOOTING.md` for step-by-step fixes.

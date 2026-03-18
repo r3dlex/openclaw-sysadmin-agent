@@ -22,7 +22,7 @@ echo "--- Checking for sensitive data in git-tracked files ---"
 ISSUES=0
 
 # Check for hardcoded home directories
-if git -C "$REPO_ROOT" grep -n '/Users/' -- ':(exclude).gitignore' 2>/dev/null | grep -v 'template\|example\|TEMPLATE\|__HOME__' | head -20; then
+if git -C "$REPO_ROOT" grep -n '/Users/' -- ':(exclude).gitignore' ':(exclude)scripts/security-audit.sh' ':(exclude)spec/TESTING.md' 2>/dev/null | grep -v 'template\|example\|TEMPLATE\|__HOME__\|grep.*Users' | head -20; then
     echo "WARNING: Found hardcoded /Users/ paths in tracked files"
     ISSUES=$((ISSUES + 1))
 else
