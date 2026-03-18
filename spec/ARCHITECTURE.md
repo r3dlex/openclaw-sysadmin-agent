@@ -63,9 +63,14 @@ openclaw-sysadmin-agent/
 │   └── watchdog.sh            # Container watchdog script
 ├── spec/
 │   ├── ARCHITECTURE.md        # This file
+│   ├── PIPELINES.md           # GitHub Actions CI/CD documentation
 │   ├── TROUBLESHOOTING.md     # Common issues and fixes
 │   ├── TESTING.md             # How to test the setup
 │   └── LEARNINGS.md           # Agent-maintained lessons learned
+├── .github/workflows/         # GitHub Actions pipelines
+│   ├── security-audit.yml     # Sensitive data scan
+│   ├── validate.yml           # Lint, agent files, Docker build
+│   └── docs.yml               # Internal link check
 ├── logs/                      # Daily maintenance logs (gitignored)
 └── archive/                   # Archived memory files (gitignored)
 ```
@@ -114,4 +119,5 @@ The agent uses two scheduling mechanisms (see `AGENTS.md` → Heartbeats):
 3. **Zero-install scripts** — The watchdog can run natively via launchd OR containerized via Docker. Scripts source `.env` for configuration.
 4. **Gitignored runtime data** — `logs/`, `archive/`, `.openclaw/`, and `.env` never hit the repo.
 5. **Security audit built-in** — The agent periodically runs `openclaw security audit --deep` as part of its maintenance protocol.
-6. **Validation** — Run `bash scripts/security-audit.sh` before commits. See `spec/TESTING.md` for full procedures.
+6. **CI/CD** — GitHub Actions run security audit, linting, Docker build, and doc checks on every push/PR. See `spec/PIPELINES.md`.
+7. **Validation** — Run `bash scripts/security-audit.sh` before commits. See `spec/TESTING.md` for full procedures.

@@ -120,6 +120,16 @@ This checks:
 
 If the audit exits with 0, you're clear to commit.
 
+## CI/CD Pipelines
+
+GitHub Actions run the same checks automatically on push/PR to `main`:
+
+- **Security Audit** — Sensitive data scan (code + git history)
+- **Validate** — Script linting, agent file checks, Docker build
+- **Docs** — Internal link verification, TODO marker scan
+
+See `spec/PIPELINES.md` for full pipeline documentation.
+
 ## Troubleshooting Test Failures
 
 If any test fails, see `spec/TROUBLESHOOTING.md` for step-by-step fixes.

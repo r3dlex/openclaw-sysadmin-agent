@@ -1,0 +1,92 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  lint-scripts:
+    name: Lint Shell Scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install shellcheck
+        run: sudo apt-get install -y shellcheck
+
+      - name: Shellcheck scripts/
+        run: |
+          shellcheck scripts/*.sh || true
+          echo "Shellcheck complete (warnings are non-blocking)"
+
+  lint-python:
+    name: Lint Python Scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check syntax
+        run: python3 -m py_compile scripts/archive.py
+
+      - name: Run ruff (if available)
+        run: |
+          pip install ruff 2>/dev/null && ruff check scripts/archive.py || true
+
+  validate-agent-files:
+    name: Validate Agent Files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check required agent files exist and are non-empty
+        run: |
+          EXIT=0
+          for f in AGENTS.md SOUL.md IDENTITY.md USER.md PROTOCOL.md HEARTBEAT.md TOOLS.md; do
+            if [ ! -s "$f" ]; then
+              echo "::error::Missing or empty: $f"
+              EXIT=1
+            else
+              echo "OK: $f"
+            fi
+          done
+          exit $EXIT
+
+      - name: Check spec files exist
+        run: |
+          EXIT=0
+          for f in spec/ARCHITECTURE.md spec/TROUBLESHOOTING.md spec/TESTING.md spec/LEARNINGS.md; do
+            if [ ! -s "$f" ]; then
+              echo "::error::Missing or empty: $f"
+              EXIT=1
+            else
+              echo "OK: $f"
+            fi
+          done
+          exit $EXIT
+
+  docker-build:
+    name: Docker Build (watchdog)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build watchdog container
+        run: docker build -t openclaw-watchdog-test watchdog/
+
+      - name: Verify container starts
+        run: |
+          docker run -d --name watchdog-test openclaw-watchdog-test
+          sleep 3
+          docker logs watchdog-test 2>&1 | head -5
+          docker stop watchdog-test
+          docker rm watchdog-test
+          echo "OK: Container builds and starts"

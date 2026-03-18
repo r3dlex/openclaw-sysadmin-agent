@@ -1,0 +1,78 @@
+name: Security Audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  sensitive-data-scan:
+    name: Sensitive Data Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for hardcoded user paths
+        run: |
+          if git grep -n '/Users/' -- ':(exclude).gitignore' ':(exclude)scripts/security-audit.sh' ':(exclude)spec/TESTING.md' | grep -v 'template\|example\|TEMPLATE\|__HOME__\|grep.*Users'; then
+            echo "::error::Found hardcoded /Users/ paths in tracked files"
+            exit 1
+          fi
+          echo "OK: No hardcoded user paths"
+
+      - name: Check for phone numbers
+        run: |
+          if git grep -nE '\+[0-9]{10,}' -- ':(exclude).env.example'; then
+            echo "::error::Found possible phone numbers in tracked files"
+            exit 1
+          fi
+          echo "OK: No phone numbers"
+
+      - name: Check for secrets patterns
+        run: |
+          if git grep -nEi '(api_key|secret_key|password|token)\s*=' -- '*.py' '*.sh' '*.md' | grep -v 'example\|template\|dummy\|placeholder\|spec/'; then
+            echo "::error::Found possible secrets in tracked files"
+            exit 1
+          fi
+          echo "OK: No secrets patterns"
+
+      - name: Verify .env is gitignored
+        run: |
+          if ! git check-ignore .env >/dev/null 2>&1; then
+            echo "::error::.env is NOT gitignored"
+            exit 1
+          fi
+          echo "OK: .env is gitignored"
+
+      - name: Verify runtime dirs are gitignored
+        run: |
+          for dir in logs archive .openclaw; do
+            if ! git check-ignore "$dir/" >/dev/null 2>&1; then
+              echo "::error::$dir/ is NOT gitignored"
+              exit 1
+            fi
+            echo "OK: $dir/ is gitignored"
+          done
+
+      - name: Scan git history for leaked secrets
+        run: |
+          ISSUES=0
+          # Check all committed file contents for real phone numbers (not dummy +1234567890)
+          if git log --all -p | grep -E '^\+.*\+49[0-9]{8,}' | grep -v 'grep\|example\|dummy'; then
+            echo "::warning::Possible phone number found in git history"
+            ISSUES=$((ISSUES + 1))
+          fi
+          # Check for real paths in committed content
+          if git log --all -p | grep -E '^\+.*/Users/[a-z]' | grep -v 'template\|__HOME__\|grep\|example\|TESTING\|security-audit'; then
+            echo "::warning::Possible hardcoded user path found in git history"
+            ISSUES=$((ISSUES + 1))
+          fi
+          if [ "$ISSUES" -gt 0 ]; then
+            echo "::warning::Found $ISSUES potential issue(s) in git history — review manually"
+          else
+            echo "OK: No sensitive data in git history"
+          fi

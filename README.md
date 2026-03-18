@@ -68,11 +68,22 @@ All configuration lives in `.env` (gitignored). Copy `.env.example` and fill in 
 
 See `.env.example` for the full list.
 
+## CI/CD
+
+GitHub Actions run automatically on every push and PR to `main`:
+
+- **Security Audit** — Scans for sensitive data in code and git history
+- **Validate** — Lints scripts, checks agent files exist, builds Docker watchdog
+- **Docs** — Verifies internal markdown links
+
+See `spec/PIPELINES.md` for details.
+
 ## Security
 
 - Sensitive data lives in `.env` (gitignored) — never in committed files
 - Runtime data (`logs/`, `archive/`, `.openclaw/`) is gitignored
-- Run `bash scripts/security-audit.sh` before every commit
+- GitHub Actions scan every push for leaked secrets (code + history)
+- Run `bash scripts/security-audit.sh` locally before every commit
 - The agent runs `openclaw security audit --deep` as part of its maintenance protocol
 
 ## License
