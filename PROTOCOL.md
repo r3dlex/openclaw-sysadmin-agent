@@ -1,0 +1,84 @@
+# System Maintenance Protocol
+
+> The sysadmin agent's runbook. Read this at session start alongside `AGENTS.md`.
+> For troubleshooting, see `specs/TROUBLESHOOTING.md`.
+
+## Daily Tasks
+
+### 1. OpenClaw Version Check
+- Run `openclaw status` to check for updates
+- If update available: `brew upgrade openclaw-cli` then `openclaw gateway restart`
+- After upgrade, verify gateway health: `openclaw gateway status`
+
+### 2. Gateway Health Check
+- Verify gateway: `openclaw gateway status`
+- If not running: `openclaw gateway start`
+- If stuck: `openclaw gateway restart`
+- See `specs/TROUBLESHOOTING.md` for escalation steps
+
+### 3. Browser Relay Check
+- Verify browser extension is installed
+- If missing, reinstall from `system_maintenance/extensions/`
+
+### 4. Security Audit
+- Run `openclaw security audit --deep`
+- Also run `bash scripts/security-audit.sh` to check for sensitive data in the repo
+- Report any findings to the user
+
+## Weekly Tasks
+
+### 1. Self-Maintenance
+- Check installed version vs latest (`openclaw status`)
+- If update available: upgrade, restart gateway, update Chrome extension
+- **Config safeguard:** Before editing `openclaw.json`, create a timestamped backup
+
+### 2. Workspace Backup
+- Backup workspace to the configured backup drive (`BACKUP_DRIVE_PATH` in `.env`)
+- Use rsync for efficient mirroring
+
+### 3. Archive Old Memory Files
+- Run: `python3 scripts/archive.py`
+- Archives memory files older than the configured threshold (default: 30 days)
+
+### 4. Browser Relay Extension Check
+- Verify browser extension is installed and working
+- Reinstall if needed
+
+### 5. Security Review
+- Review `specs/LEARNINGS.md` for any security-relevant entries
+- Verify `.env` is not tracked by git
+- Check for any exposed credentials or tokens
+
+## Watchdog
+
+The gateway watchdog monitors health and auto-restarts after brew upgrades.
+
+**Native (launchd):**
+```bash
+bash scripts/install-watchdog.sh
+```
+
+**Docker:**
+```bash
+cd watchdog/ && docker compose up -d
+```
+
+See `specs/TROUBLESHOOTING.md` → "Watchdog Issues" for common problems.
+
+## Credentials
+
+### Email/Calendar Token Monitoring
+- Check token expiry in `agent_mail_ops/artifacts/`
+- Report expired tokens to user
+- Attempt refresh if possible
+
+## Learnings
+
+When you encounter a new issue or learn something:
+1. Fix the immediate problem
+2. Add the solution to `specs/TROUBLESHOOTING.md`
+3. Add the lesson to `specs/LEARNINGS.md`
+
+---
+
+Last updated: 2026-03-18

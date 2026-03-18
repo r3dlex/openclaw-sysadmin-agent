@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  watchdog:
+    build: .
+    container_name: openclaw-watchdog
+    env_file:
+      - ../.env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ${HOME}/.openclaw/logs:/logs
+      - ${HOME}/.local/bin:/usr/local/bin:ro
+      - /opt/homebrew/bin:/opt/homebrew/bin:ro
+      - ${HOME}/.openclaw:/root/.openclaw:ro
+    restart: unless-stopped
+    network_mode: host
+
+# Usage:
+#   cd watchdog/
+#   docker compose up -d        # Start
+#   docker compose logs -f      # View logs
+#   docker compose down          # Stop

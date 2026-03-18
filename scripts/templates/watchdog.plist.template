@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  OpenClaw Watchdog LaunchAgent Template
+
+  Install:
+    1. Copy this file: cp scripts/templates/watchdog.plist.template ~/Library/LaunchAgents/com.openclaw.watchdog.plist
+    2. Replace __REPO_ROOT__ with the absolute path to this repository
+    3. Replace __HOME__ with your home directory path
+    4. Load: launchctl load ~/Library/LaunchAgents/com.openclaw.watchdog.plist
+
+  Or use the install script:
+    bash scripts/install-watchdog.sh
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.openclaw.watchdog</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>__REPO_ROOT__/scripts/watchdog.sh</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>__HOME__/.openclaw/logs/watchdog.log</string>
+    <key>StandardErrorPath</key>
+    <string>__HOME__/.openclaw/logs/watchdog.log</string>
+</dict>
+</plist>
