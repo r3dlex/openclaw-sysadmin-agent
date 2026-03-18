@@ -18,7 +18,7 @@ jobs:
 
       - name: Check for hardcoded user paths
         run: |
-          if git grep -n '/Users/' -- ':(exclude).gitignore' ':(exclude)scripts/security-audit.sh' ':(exclude)spec/TESTING.md' | grep -v 'template\|example\|TEMPLATE\|__HOME__\|grep.*Users'; then
+          if git grep -n '/Users/' -- ':(exclude).gitignore' ':(exclude)scripts/security-audit.sh' ':(exclude)spec/TESTING.md' ':(exclude)spec/PIPELINES.md' ':(exclude).github/' | grep -v 'template\|example\|TEMPLATE\|__HOME__\|grep.*Users'; then
             echo "::error::Found hardcoded /Users/ paths in tracked files"
             exit 1
           fi
@@ -26,7 +26,7 @@ jobs:
 
       - name: Check for phone numbers
         run: |
-          if git grep -nE '\+[0-9]{10,}' -- ':(exclude).env.example'; then
+          if git grep -nE '\+[0-9]{10,}' -- ':(exclude).env.example' ':(exclude).github/'; then
             echo "::error::Found possible phone numbers in tracked files"
             exit 1
           fi

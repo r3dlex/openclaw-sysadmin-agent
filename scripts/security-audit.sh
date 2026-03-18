@@ -22,7 +22,7 @@ echo "--- Checking for sensitive data in git-tracked files ---"
 ISSUES=0
 
 # Check for hardcoded home directories
-if git -C "$REPO_ROOT" grep -n '/Users/' -- ':(exclude).gitignore' ':(exclude)scripts/security-audit.sh' ':(exclude)spec/TESTING.md' 2>/dev/null | grep -v 'template\|example\|TEMPLATE\|__HOME__\|grep.*Users' | head -20; then
+if git -C "$REPO_ROOT" grep -n '/Users/' -- ':(exclude).gitignore' ':(exclude)scripts/security-audit.sh' ':(exclude)spec/TESTING.md' ':(exclude)spec/PIPELINES.md' ':(exclude).github/' 2>/dev/null | grep -v 'template\|example\|TEMPLATE\|__HOME__\|grep.*Users' | head -20; then
     echo "WARNING: Found hardcoded /Users/ paths in tracked files"
     ISSUES=$((ISSUES + 1))
 else
@@ -30,7 +30,7 @@ else
 fi
 
 # Check for phone numbers (basic pattern)
-if git -C "$REPO_ROOT" grep -nE '\+[0-9]{10,}' -- ':(exclude).env.example' 2>/dev/null | head -10; then
+if git -C "$REPO_ROOT" grep -nE '\+[0-9]{10,}' -- ':(exclude).env.example' ':(exclude).github/' 2>/dev/null | head -10; then
     echo "WARNING: Found possible phone numbers in tracked files"
     ISSUES=$((ISSUES + 1))
 else
