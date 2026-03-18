@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:3.20
 
 # Install required tools
 RUN apk add --no-cache bash curl grep coreutils

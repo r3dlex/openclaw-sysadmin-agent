@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   watchdog:
     build: .
@@ -20,3 +18,5 @@ services:
 #   docker compose up -d        # Start
 #   docker compose logs -f      # View logs
 #   docker compose down          # Stop
+#
+# See: spec/TESTING.md for validation procedures

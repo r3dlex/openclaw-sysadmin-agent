@@ -74,7 +74,7 @@ cd watchdog/ && docker compose up -d      # Install via Docker
 3. Verify `.env` is gitignored: `git check-ignore .env`
 4. Verify `logs/` and `archive/` are gitignored
 
-## Specs (Deep Dives)
+## Spec (Deep Dives)
 
 - `spec/ARCHITECTURE.md` — workspace design, directory layout, two-audience model
 - `spec/TROUBLESHOOTING.md` — known issues and step-by-step fixes

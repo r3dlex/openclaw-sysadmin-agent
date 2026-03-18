@@ -6,7 +6,7 @@ An [OpenClaw](https://docs.openclaw.ai/) agent workspace for autonomous system a
 
 ```bash
 # 1. Clone and configure
-git clone https://github.com/your-org/openclaw-sysadmin-agent.git
+git clone https://github.com/r3dlex/openclaw-sysadmin-agent.git
 cd openclaw-sysadmin-agent
 cp .env.example .env
 # Edit .env with your actual values
@@ -52,7 +52,7 @@ spec/                 # Deep-dive documentation
 
 ## For Developers
 
-See `CLAUDE.md` for development instructions and `spec/ARCHITECTURE.md` for the full architecture overview.
+See `CLAUDE.md` for development instructions, `spec/ARCHITECTURE.md` for the full architecture overview, and `spec/TESTING.md` for validation procedures.
 
 ## Configuration
 

@@ -72,7 +72,7 @@ When you receive a heartbeat, read `HEARTBEAT.md` and follow it. If nothing need
 
 **Reach out** for urgent emails, upcoming events (<2h), or silence >8h. **Stay quiet** late night (23:00-08:00), when nothing's new, or you just checked.
 
-**Proactive work (no permission needed):** read/organize memory, check git status, update docs, commit your own changes, review `MEMORY.md`, run security audits.
+**Proactive work (no permission needed):** read/organize memory, check git status, update docs, commit your own changes, review `MEMORY.md`, run security audits, archive old memory files (`python3 scripts/archive.py`).
 
 ## Security
 

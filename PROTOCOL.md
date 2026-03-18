@@ -17,8 +17,8 @@
 - See `spec/TROUBLESHOOTING.md` for escalation steps
 
 ### 3. Browser Relay Check
-- Verify browser extension is installed
-- If missing, reinstall from `system_maintenance/extensions/`
+- Verify browser extension is installed: `openclaw browser status`
+- If missing, reinstall via the OpenClaw Skills tab or `openclaw browser install`
 
 ### 4. Security Audit
 - Run `openclaw security audit --deep`
@@ -41,8 +41,8 @@
 - Archives memory files older than the configured threshold (default: 30 days)
 
 ### 4. Browser Relay Extension Check
-- Verify browser extension is installed and working
-- Reinstall if needed
+- Verify browser extension is installed and working: `openclaw browser status`
+- Reinstall if needed via Skills tab
 
 ### 5. Security Review
 - Review `spec/LEARNINGS.md` for any security-relevant entries
@@ -78,6 +78,10 @@ When you encounter a new issue or learn something:
 1. Fix the immediate problem
 2. Add the solution to `spec/TROUBLESHOOTING.md`
 3. Add the lesson to `spec/LEARNINGS.md`
+
+## Validation
+
+After any maintenance run, verify the setup: see `spec/TESTING.md` for procedures.
 
 ---
 
