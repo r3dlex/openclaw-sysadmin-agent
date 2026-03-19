@@ -13,6 +13,9 @@ on:
 permissions:
   contents: read
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   check-links:
     name: Check Internal Links
@@ -22,22 +25,23 @@ jobs:
 
       - name: Verify internal markdown links resolve
         run: |
-          EXIT=0
-          # Extract markdown links like [text](path) and backtick references like `path/FILE.md`
+          ISSUES=0
           for md in $(find . -name '*.md' -not -path './.git/*'); do
-            # Check [text](relative-path) links
-            grep -oP '\]\(\K[^)]+' "$md" 2>/dev/null | grep -v '^http' | grep -v '^#' | while read -r link; do
-              dir=$(dirname "$md")
-              target="$dir/$link"
-              if [ ! -e "$target" ]; then
-                echo "::warning file=$md::Broken link: $link"
-                EXIT=1
-              fi
-            done
+            # Extract [text](relative-path) links — must contain / or .md to be a file ref
+            grep -oP '\]\(\K[^)]+' "$md" 2>/dev/null \
+              | grep -v '^http' \
+              | grep -v '^#' \
+              | grep -E '/|\.\w+$' \
+              | while read -r link; do
+                dir=$(dirname "$md")
+                target="$dir/$link"
+                if [ ! -e "$target" ]; then
+                  echo "::warning file=$md::Broken link: $link"
+                  ISSUES=$((ISSUES + 1))
+                fi
+              done
           done
-          if [ "$EXIT" -eq 0 ]; then
-            echo "OK: All internal links resolve"
-          fi
+          echo "Link check complete"
 
       - name: Check for TODO/FIXME markers
         run: |
