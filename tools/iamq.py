@@ -38,7 +38,7 @@ except ImportError:
     pass
 
 AGENT_ID = os.environ.get("IAMQ_AGENT_ID", "sysadmin_agent")
-IAMQ_BASE_URL = os.environ.get("IAMQ_BASE_URL", "http://127.0.0.1:18790")
+IAMQ_HTTP_URL = os.environ.get("IAMQ_HTTP_URL", "http://127.0.0.1:18790")
 
 
 def _request(
@@ -47,7 +47,7 @@ def _request(
     data: dict | None = None,
 ) -> dict:
     """Make an HTTP request to the IAMQ service."""
-    url = f"{IAMQ_BASE_URL}{path}"
+    url = f"{IAMQ_HTTP_URL}{path}"
     body = json.dumps(data).encode() if data else None
     req = urllib.request.Request(
         url,
@@ -67,8 +67,21 @@ def _request(
 
 
 def register() -> dict:
-    """Register this agent with IAMQ."""
-    result = _request("POST", "/register", {"agent_id": AGENT_ID})
+    """Register this agent with IAMQ including discovery metadata."""
+    result = _request("POST", "/register", {
+        "agent_id": AGENT_ID,
+        "name": "Sentinel 🛡️",
+        "emoji": "🛡️",
+        "description": "System guardian — monitors gateway health, runs maintenance, security audits",
+        "capabilities": [
+            "gateway_health",
+            "security_audit",
+            "watchdog",
+            "brew_upgrade",
+            "memory_archive",
+            "system_maintenance",
+        ],
+    })
     print(f"Registered as {AGENT_ID}: {result.get('status', 'ok')}")
     return result
 
@@ -165,6 +178,13 @@ def ack_message(message_id: str) -> dict:
     return result
 
 
+def acted_message(message_id: str) -> dict:
+    """Mark a message as acted (fully handled)."""
+    result = _request("PATCH", f"/messages/{message_id}", {"status": "acted"})
+    print(f"Message {message_id[:8]}… marked as acted")
+    return result
+
+
 def main(argv: list[str] | None = None) -> None:
     """CLI entry point."""
     parser = argparse.ArgumentParser(
@@ -198,6 +218,9 @@ def main(argv: list[str] | None = None) -> None:
     ack_p = sub.add_parser("ack", help="Mark a message as read")
     ack_p.add_argument("message_id", help="Message UUID")
 
+    acted_p = sub.add_parser("acted", help="Mark a message as acted (handled)")
+    acted_p.add_argument("message_id", help="Message UUID")
+
     args = parser.parse_args(argv)
 
     match args.command:
@@ -221,6 +244,8 @@ def main(argv: list[str] | None = None) -> None:
             broadcast_message(args.subject, args.body, priority=args.priority)
         case "ack":
             ack_message(args.message_id)
+        case "acted":
+            acted_message(args.message_id)
 
 
 if __name__ == "__main__":

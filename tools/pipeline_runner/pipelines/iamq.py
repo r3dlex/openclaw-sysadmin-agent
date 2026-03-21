@@ -10,13 +10,13 @@ import urllib.request
 from tools.pipeline_runner.runner import PipelineResult
 
 AGENT_ID = os.environ.get("IAMQ_AGENT_ID", "sysadmin_agent")
-IAMQ_BASE_URL = os.environ.get("IAMQ_BASE_URL", "http://127.0.0.1:18790")
+IAMQ_HTTP_URL = os.environ.get("IAMQ_HTTP_URL", "http://127.0.0.1:18790")
 
 
 def _get(path: str) -> dict | None:
     """GET from IAMQ, return None if unreachable."""
     try:
-        req = urllib.request.Request(f"{IAMQ_BASE_URL}{path}")
+        req = urllib.request.Request(f"{IAMQ_HTTP_URL}{path}")
         with urllib.request.urlopen(req, timeout=5) as resp:
             return json.loads(resp.read().decode())
     except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError):
@@ -27,7 +27,7 @@ def _check_reachable() -> tuple[list[str], list[str]]:
     """Check if IAMQ service is reachable."""
     result = _get("/status")
     if result is None:
-        return [f"IAMQ not reachable at {IAMQ_BASE_URL}"], []
+        return [f"IAMQ not reachable at {IAMQ_HTTP_URL}"], []
     return [], []
 
 
