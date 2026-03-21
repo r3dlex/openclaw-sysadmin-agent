@@ -11,14 +11,19 @@ cd openclaw-sysadmin-agent
 cp .env.example .env
 # Edit .env with your actual values
 
-# 2. Install the gateway watchdog (pick one)
+# 2. Install Python tools (optional — for dev/CI tooling)
+pip install .                # Minimal
+pip install ".[dotenv]"      # With .env auto-loading
+poetry install               # Full dev environment
+
+# 3. Install the gateway watchdog (pick one)
 bash scripts/install-watchdog.sh          # macOS LaunchAgent
 # OR
 cd watchdog/ && docker compose up -d      # Docker container
 
-# 3. Verify
+# 4. Verify
 openclaw gateway status
-bash scripts/security-audit.sh
+python -m tools.pipeline_runner
 ```
 
 ## What It Does
@@ -28,26 +33,41 @@ bash scripts/security-audit.sh
 - **Memory management** — Daily logs, long-term memory curation, automatic archival of old files
 - **Heartbeat polling** — Periodic checks for emails, calendar, mentions, and proactive tasks
 - **Security** — Regular `openclaw security audit --deep` runs and repo-level sensitive data checks
+- **Inter-agent communication** — Registered on the IAMQ message queue, communicates with peer agents
 
 ## Repository Structure
 
 ```
-AGENTS.md              # Agent behavior contract (read by OpenClaw agent)
-SOUL.md                # Agent identity and boundaries
-PROTOCOL.md            # System maintenance runbook
-HEARTBEAT.md           # Periodic task queue
-scripts/               # Automation scripts
-  ├── watchdog.sh      # Gateway health monitor
-  ├── archive.py       # Memory file archiver
-  ├── close-tabs.sh    # Browser tab cleanup
-  ├── security-audit.sh # Sensitive data checker
-  └── install-watchdog.sh # LaunchAgent installer
-watchdog/              # Docker-based gateway monitor
-spec/                 # Deep-dive documentation
-  ├── ARCHITECTURE.md  # How everything fits together
-  ├── TROUBLESHOOTING.md # Common issues and fixes
-  ├── TESTING.md       # Validation procedures
-  └── LEARNINGS.md     # Agent-maintained lessons learned
+pyproject.toml             # Poetry project config (entry points, deps, linting)
+tools/                     # Python package
+  ├── archive.py           # Memory file archiver (oc-archive)
+  ├── security_audit.py    # Sensitive data checker (oc-security-audit)
+  ├── iamq.py              # Inter-Agent Message Queue client (oc-iamq)
+  └── pipeline_runner/     # CI/CD pipeline runner (oc-pipeline)
+      ├── cli.py           # CLI entry point
+      ├── runner.py        # Pipeline orchestration
+      └── pipelines/       # Individual pipelines
+          ├── security.py  # Sensitive data scan
+          ├── validate.py  # Lint, agent files, Docker build
+          ├── docs.py      # Internal link check
+          └── iamq.py      # IAMQ health check
+scripts/                   # Shell scripts (macOS-native tasks)
+  ├── watchdog.sh          # Gateway health monitor
+  ├── close-tabs.sh        # Browser tab cleanup
+  ├── security-audit.sh    # Legacy bash audit (still works)
+  ├── install-watchdog.sh  # LaunchAgent installer
+  └── templates/           # Plist template
+watchdog/                  # Docker-based gateway monitor
+AGENTS.md                  # Agent behavior contract (read by OpenClaw agent)
+SOUL.md                    # Agent identity and boundaries
+PROTOCOL.md                # System maintenance runbook
+HEARTBEAT.md               # Periodic task queue
+spec/                      # Deep-dive documentation
+  ├── ARCHITECTURE.md      # How everything fits together
+  ├── PIPELINES.md         # CI/CD pipeline documentation
+  ├── TROUBLESHOOTING.md   # Common issues and fixes
+  ├── TESTING.md           # Validation procedures
+  └── LEARNINGS.md         # Agent-maintained lessons learned
 ```
 
 ## For Developers
@@ -70,11 +90,13 @@ See `.env.example` for the full list.
 
 ## CI/CD
 
-GitHub Actions run automatically on every push and PR to `main`:
+GitHub Actions run automatically on every push and PR to `main`, powered by `tools/pipeline_runner`:
 
-- **Security Audit** — Scans for sensitive data in code and git history
-- **Validate** — Lints scripts, checks agent files exist, builds Docker watchdog
-- **Docs** — Verifies internal markdown links
+- **Security Audit** — `python -m tools.pipeline_runner security`
+- **Validate** — `python -m tools.pipeline_runner validate`
+- **Docs** — `python -m tools.pipeline_runner docs`
+
+Run locally: `python -m tools.pipeline_runner` (all pipelines at once).
 
 See `spec/PIPELINES.md` for details.
 
@@ -83,7 +105,7 @@ See `spec/PIPELINES.md` for details.
 - Sensitive data lives in `.env` (gitignored) — never in committed files
 - Runtime data (`logs/`, `archive/`, `.openclaw/`) is gitignored
 - GitHub Actions scan every push for leaked secrets (code + history)
-- Run `bash scripts/security-audit.sh` locally before every commit
+- Run `python -m tools.pipeline_runner security` locally before every commit
 - The agent runs `openclaw security audit --deep` as part of its maintenance protocol
 
 ## License

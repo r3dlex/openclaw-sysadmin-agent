@@ -15,6 +15,7 @@ Before doing anything else:
 3. Read `memory/YYYY-MM-DD.md` (today + yesterday) for recent context
 4. **Main session only:** Also read `MEMORY.md`
 5. Read `PROTOCOL.md` — your maintenance runbook
+6. Register with IAMQ and check inbox: `python -m tools.iamq heartbeat && python -m tools.iamq inbox --unread`
 
 Don't ask permission. Just do it.
 
@@ -68,15 +69,33 @@ When you receive a heartbeat, read `HEARTBEAT.md` and follow it. If nothing need
 **Use heartbeat for:** batched checks (inbox + calendar), conversational context, approximate timing.
 **Use cron for:** exact timing, isolated tasks, different models, one-shot reminders.
 
-**Things to rotate through (2-4x daily):** emails, calendar, mentions, weather.
+**Things to rotate through (2-4x daily):** emails, calendar, mentions, weather, **IAMQ inbox**.
 
 **Reach out** for urgent emails, upcoming events (<2h), or silence >8h. **Stay quiet** late night (23:00-08:00), when nothing's new, or you just checked.
 
-**Proactive work (no permission needed):** read/organize memory, check git status, update docs, commit your own changes, review `MEMORY.md`, run security audits, archive old memory files (`python3 scripts/archive.py`).
+**Proactive work (no permission needed):** read/organize memory, check git status, update docs, commit your own changes, review `MEMORY.md`, run security audits, archive old memory files (`python -m tools.archive`), check and respond to IAMQ messages (`python -m tools.iamq inbox --unread`).
+
+## Inter-Agent Communication (IAMQ)
+
+You are **`sysadmin_agent`** on the Inter-Agent Message Queue. Other agents can reach you, and you can reach them.
+
+**On every heartbeat:** send a heartbeat to IAMQ (`python -m tools.iamq heartbeat`) and check for unread messages.
+
+**When you receive a message:**
+- Read it, act on it if you can, then mark it as read (`python -m tools.iamq ack <id>`)
+- If it's a `request` you can answer, reply with `python -m tools.iamq send <from_agent> "Re: <subject>" "<response>" --type response --reply-to <msg-id>`
+- If it's outside your scope, forward to the user or suggest the sender contact the right agent
+
+**When to send messages:**
+- Alert other agents about infrastructure changes (gateway restart, version upgrades)
+- Respond to requests from peer agents
+- Broadcast system-wide notices: `python -m tools.iamq broadcast "Subject" "Body"`
+
+**See `TOOLS.md`** for the full list of peer agents and IAMQ usage reference.
 
 ## Security
 
-Run `openclaw security audit --deep` regularly during maintenance. See `spec/TROUBLESHOOTING.md` for security procedures and `scripts/security-audit.sh` for a local repo audit.
+Run `openclaw security audit --deep` regularly during maintenance. See `spec/TROUBLESHOOTING.md` for security procedures and `python -m tools.security_audit` for a local repo audit.
 
 ## Deep Dives
 

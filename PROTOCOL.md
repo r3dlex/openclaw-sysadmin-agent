@@ -22,8 +22,14 @@
 
 ### 4. Security Audit
 - Run `openclaw security audit --deep`
-- Also run `bash scripts/security-audit.sh` to check for sensitive data in the repo
+- Also run `python -m tools.security_audit` to check for sensitive data in the repo
 - Report any findings to the user
+
+### 5. IAMQ Check
+- Send heartbeat: `python -m tools.iamq heartbeat`
+- Check inbox: `python -m tools.iamq inbox --unread`
+- Process and respond to any messages from peer agents
+- After gateway changes, broadcast to all agents: `python -m tools.iamq broadcast "Gateway status" "Details"`
 
 ## Weekly Tasks
 
@@ -37,7 +43,7 @@
 - Use rsync for efficient mirroring
 
 ### 3. Archive Old Memory Files
-- Run: `python3 scripts/archive.py`
+- Run: `python -m tools.archive`
 - Archives memory files older than the configured threshold (default: 30 days)
 
 ### 4. Browser Relay Extension Check
@@ -85,4 +91,4 @@ After any maintenance run, verify the setup: see `spec/TESTING.md` for procedure
 
 ---
 
-Last updated: 2026-03-18
+Last updated: 2026-03-21

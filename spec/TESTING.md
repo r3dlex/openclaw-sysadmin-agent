@@ -5,13 +5,13 @@
 
 ## Quick Health Check
 
-Run all checks at once:
+Run all pipelines at once:
 
 ```bash
-bash scripts/security-audit.sh
+python -m tools.pipeline_runner
 ```
 
-Or individually:
+Or run individual checks:
 
 ```bash
 # 1. Gateway running?
@@ -23,18 +23,38 @@ pgrep -f watchdog.sh || echo "Watchdog not running"
 # 3. Environment configured?
 test -f .env && echo ".env exists" || echo "Missing .env — copy from .env.example"
 
-# 4. Full security audit
-openclaw security audit --deep
+# 4. Full security audit (with openclaw CLI)
+python -m tools.security_audit
+```
+
+## Pipeline Tests
+
+### Run All Pipelines
+```bash
+python -m tools.pipeline_runner
+# Runs: security, validate, docs
+# Exit code 0 = all passed, non-zero = failures
+```
+
+### Security Pipeline Only
+```bash
+python -m tools.pipeline_runner security
+# Checks: hardcoded paths, phone numbers, secrets, gitignore, git history
+```
+
+### Validate Pipeline Only
+```bash
+python -m tools.pipeline_runner validate
+# Checks: shellcheck, ruff, agent files, spec files, Docker build
+```
+
+### Docs Pipeline Only
+```bash
+python -m tools.pipeline_runner docs
+# Checks: internal markdown links, TODO markers
 ```
 
 ## Script Tests
-
-### Security Audit
-```bash
-# Checks for sensitive data in git + runs openclaw audit
-bash scripts/security-audit.sh
-# Exit code 0 = clean, non-zero = issues found
-```
 
 ### Watchdog (host)
 ```bash
@@ -58,7 +78,7 @@ docker compose down
 ### Archive Maintenance
 ```bash
 # Reports what would be archived (non-destructive to read)
-python3 scripts/archive.py
+python -m tools.archive
 ```
 
 ### Tab Cleanup
@@ -105,28 +125,31 @@ done
 
 ## Pre-Commit Checklist
 
-Before committing, run the automated audit:
+Before committing, run:
 
 ```bash
-bash scripts/security-audit.sh
+python -m tools.pipeline_runner
 ```
 
 This checks:
 1. No hardcoded local paths in tracked files
 2. No phone numbers or secrets in tracked files
-3. `.env` is gitignored
-4. `logs/`, `archive/`, `.openclaw/` are gitignored
-5. `openclaw security audit --deep` passes
+3. `.env`, `logs/`, `archive/`, `.openclaw/` are gitignored
+4. Shell scripts pass shellcheck (non-blocking)
+5. Python code passes syntax check and ruff (non-blocking)
+6. All required agent and spec files exist
+7. Internal markdown links resolve
+8. No stale TODO markers in docs
 
-If the audit exits with 0, you're clear to commit.
+If all pipelines pass, you're clear to commit.
 
 ## CI/CD Pipelines
 
-GitHub Actions run the same checks automatically on push/PR to `main`:
+GitHub Actions run the same pipelines automatically on push/PR to `main`:
 
-- **Security Audit** — Sensitive data scan (code + git history)
-- **Validate** — Script linting, agent file checks, Docker build
-- **Docs** — Internal link verification, TODO marker scan
+- **Security Audit** — `python -m tools.pipeline_runner security`
+- **Validate** — `python -m tools.pipeline_runner validate` + Docker build
+- **Docs** — `python -m tools.pipeline_runner docs`
 
 See `spec/PIPELINES.md` for full pipeline documentation.
 

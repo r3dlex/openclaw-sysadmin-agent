@@ -1,0 +1,38 @@
+[tool.poetry]
+name = "openclaw-sysadmin-agent"
+version = "0.1.0"
+description = "OpenClaw sysadmin agent workspace — autonomous system administration for macOS"
+readme = "README.md"
+license = "MIT"
+packages = [{ include = "tools" }]
+
+[tool.poetry.scripts]
+oc-pipeline = "tools.pipeline_runner.cli:main"
+oc-archive = "tools.archive:main"
+oc-security-audit = "tools.security_audit:main"
+oc-iamq = "tools.iamq:main"
+
+[tool.poetry.dependencies]
+python = ">=3.11"
+python-dotenv = { version = ">=1.0", optional = true }
+
+[tool.poetry.extras]
+dotenv = ["python-dotenv"]
+
+[tool.poetry.group.dev.dependencies]
+ruff = ">=0.4"
+pytest = ">=8.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "A", "SIM", "PTH"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
