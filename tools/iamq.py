@@ -39,6 +39,7 @@ except ImportError:
 
 AGENT_ID = os.environ.get("IAMQ_AGENT_ID", "sysadmin_agent")
 IAMQ_HTTP_URL = os.environ.get("IAMQ_HTTP_URL", "http://127.0.0.1:18790")
+WORKSPACE = str(Path(__file__).resolve().parent.parent)
 
 
 def _request(
@@ -81,6 +82,7 @@ def register() -> dict:
             "memory_archive",
             "system_maintenance",
         ],
+        "workspace": WORKSPACE,
     })
     print(f"Registered as {AGENT_ID}: {result.get('status', 'ok')}")
     return result
