@@ -46,8 +46,8 @@ def _request(
     method: str,
     path: str,
     data: dict | None = None,
-) -> dict:
-    """Make an HTTP request to the IAMQ service."""
+) -> dict | None:
+    """Make an HTTP request to the IAMQ service. Returns parsed JSON or None on failure."""
     url = f"{IAMQ_HTTP_URL}{path}"
     body = json.dumps(data).encode() if data else None
     req = urllib.request.Request(
@@ -59,20 +59,20 @@ def _request(
     try:
         with urllib.request.urlopen(req, timeout=10) as resp:
             return json.loads(resp.read().decode())
-    except urllib.error.URLError as exc:
-        print(f"ERROR: Cannot reach IAMQ at {url}: {exc.reason}", file=sys.stderr)
-        sys.exit(1)
     except urllib.error.HTTPError as exc:
         print(f"ERROR: IAMQ returned {exc.code}: {exc.read().decode()}", file=sys.stderr)
-        sys.exit(1)
+        return None
+    except (urllib.error.URLError, OSError) as exc:
+        print(f"ERROR: Cannot reach IAMQ at {url}: {exc}", file=sys.stderr)
+        return None
 
 
-def register() -> dict:
+def register() -> dict | None:
     """Register this agent with IAMQ including discovery metadata."""
     result = _request("POST", "/register", {
         "agent_id": AGENT_ID,
-        "name": "Sentinel 🛡️",
-        "emoji": "🛡️",
+        "name": "Sentinel \U0001f6e1\ufe0f",
+        "emoji": "\U0001f6e1\ufe0f",
         "description": "System guardian — monitors gateway health, runs maintenance, security audits",
         "capabilities": [
             "gateway_health",
@@ -84,23 +84,32 @@ def register() -> dict:
         ],
         "workspace": WORKSPACE,
     })
-    print(f"Registered as {AGENT_ID}: {result.get('status', 'ok')}")
+    if result:
+        print(f"Registered as {AGENT_ID}: {result.get('status', 'ok')}")
+    else:
+        print(f"Registration failed for {AGENT_ID} (IAMQ unreachable)", file=sys.stderr)
     return result
 
 
-def heartbeat() -> dict:
+def heartbeat() -> dict | None:
     """Send a heartbeat (auto-registers if not registered)."""
     result = _request("POST", "/heartbeat", {"agent_id": AGENT_ID})
-    print(f"Heartbeat sent for {AGENT_ID}")
+    if result:
+        print(f"Heartbeat sent for {AGENT_ID}")
+    else:
+        print(f"Heartbeat failed for {AGENT_ID} (IAMQ unreachable)", file=sys.stderr)
     return result
 
 
-def inbox(unread_only: bool = False) -> dict:
+def inbox(unread_only: bool = False) -> dict | None:
     """Fetch inbox messages."""
     path = f"/inbox/{AGENT_ID}"
     if unread_only:
         path += "?status=unread"
     result = _request("GET", path)
+    if not result:
+        print("Cannot reach IAMQ to check inbox.", file=sys.stderr)
+        return None
     messages = result.get("messages", [])
     if not messages:
         print("Inbox empty.")
@@ -112,15 +121,18 @@ def inbox(unread_only: bool = False) -> dict:
         from_agent = msg.get("from", "?")
         subject = msg.get("subject", "(no subject)")
         msg_id = msg.get("id", "?")[:8]
-        print(f"  [{priority:>6}] [{status:>6}] {from_agent} → {subject}  ({msg_id}…)")
+        print(f"  [{priority:>6}] [{status:>6}] {from_agent} \u2192 {subject}  ({msg_id}\u2026)")
 
     print(f"\n{len(messages)} message(s)")
     return result
 
 
-def agents() -> dict:
+def agents() -> dict | None:
     """List all online agents."""
     result = _request("GET", "/agents")
+    if not result:
+        print("Cannot reach IAMQ to list agents.", file=sys.stderr)
+        return None
     agent_list = result.get("agents", [])
     if not agent_list:
         print("No agents online.")
@@ -129,17 +141,20 @@ def agents() -> dict:
     print("Online agents:")
     for agent in agent_list:
         agent_id = agent.get("id", "?")
-        marker = " ← you" if agent_id == AGENT_ID else ""
+        marker = " \u2190 you" if agent_id == AGENT_ID else ""
         print(f"  - {agent_id}{marker}")
 
     print(f"\n{len(agent_list)} agent(s) online")
     return result
 
 
-def status() -> dict:
+def status() -> dict | None:
     """Get IAMQ queue health status."""
     result = _request("GET", "/status")
-    print(json.dumps(result, indent=2))
+    if result:
+        print(json.dumps(result, indent=2))
+    else:
+        print("Cannot reach IAMQ to check status.", file=sys.stderr)
     return result
 
 
@@ -151,7 +166,7 @@ def send_message(
     priority: str = "NORMAL",
     msg_type: str = "info",
     reply_to: str | None = None,
-) -> dict:
+) -> dict | None:
     """Send a message to another agent."""
     data: dict = {
         "from": AGENT_ID,
@@ -164,26 +179,35 @@ def send_message(
     if reply_to:
         data["replyTo"] = reply_to
     result = _request("POST", "/send", data)
-    print(f"Sent to {to}: {subject}")
+    if result:
+        print(f"Sent to {to}: {subject}")
+    else:
+        print(f"Failed to send to {to}: {subject}", file=sys.stderr)
     return result
 
 
-def broadcast_message(subject: str, body: str, *, priority: str = "NORMAL") -> dict:
+def broadcast_message(subject: str, body: str, *, priority: str = "NORMAL") -> dict | None:
     """Broadcast a message to all agents."""
     return send_message("broadcast", subject, body, priority=priority, msg_type="info")
 
 
-def ack_message(message_id: str) -> dict:
+def ack_message(message_id: str) -> dict | None:
     """Mark a message as read."""
     result = _request("PATCH", f"/messages/{message_id}", {"status": "read"})
-    print(f"Message {message_id[:8]}… marked as read")
+    if result:
+        print(f"Message {message_id[:8]}\u2026 marked as read")
+    else:
+        print(f"Failed to mark message {message_id[:8]}\u2026 as read", file=sys.stderr)
     return result
 
 
-def acted_message(message_id: str) -> dict:
+def acted_message(message_id: str) -> dict | None:
     """Mark a message as acted (fully handled)."""
     result = _request("PATCH", f"/messages/{message_id}", {"status": "acted"})
-    print(f"Message {message_id[:8]}… marked as acted")
+    if result:
+        print(f"Message {message_id[:8]}\u2026 marked as acted")
+    else:
+        print(f"Failed to mark message {message_id[:8]}\u2026 as acted", file=sys.stderr)
     return result
 
 
