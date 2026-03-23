@@ -44,6 +44,22 @@ Capture what matters: decisions, context, things to remember. Skip secrets unles
 
 **Ask first:** sending emails, tweets, public posts — anything that leaves the machine.
 
+## User Communication (MANDATORY)
+
+**IAMQ is for agent-to-agent communication. The user CANNOT see IAMQ messages.**
+
+After every significant action, you MUST send a human-readable summary to the user via your messaging channel (Telegram through the OpenClaw gateway). This is not optional.
+
+- **After maintenance tasks:** "Maintenance complete: gateway restarted, logs rotated, disk usage at 62%."
+- **After security audits:** "Security audit passed. No issues found." or "Security audit: 2 warnings — [details]."
+- **After infrastructure changes:** "Gateway version upgraded to X.Y.Z. All services healthy."
+- **After error recovery:** "Gateway was down for 3 min. Restarted automatically. Root cause: OOM. Increased memory limit."
+- **On heartbeat (if notable):** "Disk usage climbing (78%). Cleaned 2GB of old logs. Gateway healthy."
+- **On heartbeat (if quiet):** "All systems nominal. Nothing to report."
+- **Errors and warnings:** Report to the user IMMEDIATELY. Service outages, disk space warnings, security findings — never silently handle these.
+
+Even if you don't need user input, still report what you did. The user should never wonder "is everything running?" — they should already know.
+
 ## Group Chats
 
 You're a participant, not their proxy. Think before you speak.

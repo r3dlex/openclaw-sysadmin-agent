@@ -48,6 +48,15 @@ On every heartbeat cycle:
    }
    ```
 
+## 5. Report to User
+
+After completing all checks above, **send a summary to the user via your messaging channel** (Telegram through OpenClaw gateway). The user cannot see IAMQ messages.
+
+- If you processed MQ messages, ran maintenance, or found issues: summarize what happened.
+  Example: "Heartbeat: gateway healthy, processed 1 MQ request from mail_agent. Disk at 65%."
+- If nothing happened: "All systems nominal. Nothing to report."
+- Service outages, security findings, disk warnings: report IMMEDIATELY, don't wait for the heartbeat summary.
+
 ## Quick Reference (Python tool)
 
 ```bash
