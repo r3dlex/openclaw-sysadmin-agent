@@ -36,7 +36,7 @@ Things like:
 The IAMQ service enables communication with other OpenClaw agents in this environment.
 
 **Your agent ID:** `sysadmin_agent`
-**Service:** `http://127.0.0.1:18790` (HTTP) / `ws://127.0.0.1:18791` (WebSocket)
+**Service:** `http://127.0.0.1:18790` (HTTP) / `ws://127.0.0.1:18793` (WebSocket)
 
 ### Quick Reference
 

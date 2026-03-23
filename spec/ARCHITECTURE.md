@@ -30,7 +30,7 @@ This repository is an **OpenClaw agent workspace** — a self-contained environm
 ┌──────────▼──────────┐        │
 │  IAMQ (Elixir/OTP)  │        │
 │  :18790 HTTP         │        │
-│  :18791 WebSocket    │        │
+│  :18793 WebSocket    │        │
 │  Agent discovery &   │        │
 │  inter-agent msgs    │        │
 └─────────────────────┘        │
@@ -157,7 +157,7 @@ The sysadmin agent communicates with other OpenClaw agents via the IAMQ service 
 
 - **Agent ID:** `sysadmin_agent`
 - **HTTP API:** `http://127.0.0.1:18790`
-- **WebSocket:** `ws://127.0.0.1:18791`
+- **WebSocket:** `ws://127.0.0.1:18793`
 - **Client:** `tools/iamq.py` (`oc-iamq` / `python -m tools.iamq`)
 - **Health pipeline:** `python -m tools.pipeline_runner iamq`
 

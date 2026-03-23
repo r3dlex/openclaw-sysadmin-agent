@@ -1,0 +1,15 @@
+services:
+  # IAMQ sidecar — inter-agent messaging (Elixir/OTP, zero-install)
+  iamq:
+    build: ./iamq
+    restart: unless-stopped
+    environment:
+      IAMQ_HTTP_URL: http://host.docker.internal:18790
+      IAMQ_WS_URL: ws://host.docker.internal:18793/ws
+      IAMQ_AGENT_ID: sysadmin_agent
+      IAMQ_AGENT_NAME: Sentinel
+      IAMQ_AGENT_EMOJI: "\U0001F6E1"
+      IAMQ_AGENT_DESC: "System guardian — monitors gateway health, runs maintenance, security audits"
+      IAMQ_AGENT_CAPABILITIES: gateway_health,security_audit,watchdog,brew_upgrade,memory_archive,system_maintenance
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
