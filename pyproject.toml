@@ -22,6 +22,7 @@ dotenv = ["python-dotenv"]
 [tool.poetry.group.dev.dependencies]
 ruff = ">=0.4"
 pytest = ">=8.0"
+pytest-cov = ">=5.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -36,3 +37,4 @@ select = ["E", "F", "W", "I", "N", "UP", "B", "A", "SIM", "PTH"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+addopts = "--cov=tools --cov-report=term-missing --cov-fail-under=10"
