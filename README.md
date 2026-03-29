@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo.svg" alt="Sysadmin Agent logo" width="96" height="96">
+</p>
+
 # OpenClaw Sysadmin Agent
 
 An [OpenClaw](https://docs.openclaw.ai/) agent workspace for autonomous system administration. The agent monitors gateway health, runs maintenance tasks, manages its own memory, and responds to heartbeat polls — all without human intervention.
