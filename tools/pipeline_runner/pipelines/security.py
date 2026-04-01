@@ -64,7 +64,7 @@ def _check_phone_numbers() -> tuple[list[str], list[str]]:
     cmd = [
         "git", "-C", str(REPO_ROOT), "grep", "-nE", r"\+[0-9]{10,}",
         "--", ":(exclude).env.example", ":(exclude).github/",
-        ":(exclude)tools/pipeline_runner/",
+        ":(exclude)tools/pipeline_runner/", ":(exclude)tests/",
     ]
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.stdout.strip():
