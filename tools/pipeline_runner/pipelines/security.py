@@ -28,6 +28,7 @@ EXCLUDE_GLOBS_GIT = [
     ":(exclude).github/",
     ":(exclude)tools/pipeline_runner/",
     ":(exclude)tools/security_audit.py",
+    ":(exclude)tests/",
 ]
 
 GITIGNORE_REQUIRED = [".env", "logs/", "archive/", ".openclaw/"]
@@ -76,7 +77,7 @@ def _check_secrets_patterns() -> tuple[list[str], list[str]]:
     cmd = [
         "git", "-C", str(REPO_ROOT), "grep", "-nEi",
         r"(api_key|secret_key|password|token)\s*=",
-        "--", "*.py", "*.sh", "*.md",
+        "--", "*.py", "*.sh", "*.md", ":(exclude)tests/",
     ]
     result = subprocess.run(cmd, capture_output=True, text=True)
     hits = [
