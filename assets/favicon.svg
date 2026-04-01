@@ -1,45 +1,24 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-  <!-- Tail -->
-  <polygon points="64,96 54,112 74,112" fill="#E8453C"/>
-  <polygon points="64,108 58,118 70,118" fill="#D63C34"/>
-  <!-- Body -->
+  <!-- Favicon: head + claws only -->
   <ellipse cx="64" cy="72" rx="28" ry="24" fill="#E8453C"/>
   <ellipse cx="64" cy="78" rx="18" ry="14" fill="#F4A39C"/>
-  <!-- Claw arms -->
   <rect x="36" y="48" width="10" height="18" rx="4" fill="#E8453C" transform="rotate(-20 41 57)"/>
   <rect x="82" y="48" width="10" height="18" rx="4" fill="#E8453C" transform="rotate(20 87 57)"/>
-  <!-- Left claw -->
   <circle cx="30" cy="45" r="14" fill="#E8453C"/>
   <circle cx="30" cy="45" r="9" fill="#F4A39C"/>
-  <!-- Right claw -->
   <circle cx="98" cy="45" r="14" fill="#E8453C"/>
   <circle cx="98" cy="45" r="9" fill="#F4A39C"/>
-  <!-- Eyes -->
   <circle cx="54" cy="60" r="7" fill="white"/>
   <circle cx="74" cy="60" r="7" fill="white"/>
   <circle cx="56" cy="60" r="3" fill="#222"/>
   <circle cx="76" cy="60" r="3" fill="#222"/>
   <circle cx="54" cy="58" r="1.5" fill="white" opacity="0.8"/>
   <circle cx="74" cy="58" r="1.5" fill="white" opacity="0.8"/>
-  <!-- Antennae -->
   <path d="M58,52 Q52,30 42,22" stroke="#E8453C" stroke-width="2.5" fill="none" stroke-linecap="round"/>
   <path d="M70,52 Q76,30 86,22" stroke="#E8453C" stroke-width="2.5" fill="none" stroke-linecap="round"/>
   <circle cx="42" cy="22" r="2.5" fill="#F4A39C"/>
   <circle cx="86" cy="22" r="2.5" fill="#F4A39C"/>
-  <!-- Smile -->
   <path d="M58,70 Q64,76 70,70" stroke="#C0392B" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-  <!-- Cheeks -->
   <ellipse cx="48" cy="70" rx="4" ry="2.5" fill="#F4A39C" opacity="0.6"/>
   <ellipse cx="80" cy="70" rx="4" ry="2.5" fill="#F4A39C" opacity="0.6"/>
-  <!-- Shield in right claw -->
-  <g transform="translate(100,34)">
-    <path d="M0,-12 L10,-6 L10,4 C10,10 4,14 0,16 C-4,14 -10,10 -10,4 L-10,-6 Z" fill="#34495E"/>
-    <path d="M-3,2 L-1,5 L4,-2" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  </g>
-  <!-- Wrench in left claw -->
-  <g transform="translate(26,34) rotate(-20)">
-    <rect x="-1.5" y="-6" width="3" height="16" rx="1" fill="#7F8C8D"/>
-    <circle cx="0" cy="-6" r="4" fill="none" stroke="#7F8C8D" stroke-width="2.5"/>
-    <rect x="-2.5" y="8" width="5" height="4" rx="1" fill="#7F8C8D"/>
-  </g>
 </svg>
