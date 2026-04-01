@@ -28,6 +28,8 @@ EXCLUDE_GLOBS = [
     ":(exclude).github/",
     ":(exclude)tools/pipeline_runner/",
     ":(exclude)tools/security_audit.py",
+    # Test files intentionally contain sensitive-looking strings as test data
+    ":(exclude)tests/",
 ]
 
 
