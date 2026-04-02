@@ -104,3 +104,19 @@ pip-delete-this-directory.txt
 .pypirc
 .ropeproject
 /site
+
+# =============================================================================
+# Erlang/Elixir artifacts
+# =============================================================================
+
+erl_crash.dump
+*.beam
+*.ez
+_build/
+deps/
+doc/
+.elixir_ls/
+.lexical/
+priv/plts/
+*.plt
+*.plt.hash
